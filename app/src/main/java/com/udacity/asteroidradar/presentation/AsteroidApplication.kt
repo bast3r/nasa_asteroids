@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
@@ -8,17 +9,21 @@ import androidx.work.WorkManager
 import com.udacity.asteroidradar.data.AsteroidRepository
 import com.udacity.asteroidradar.domain.workers.DeleteOldDataWorker
 import com.udacity.asteroidradar.domain.workers.LoadTodayDataWorker
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class AsteroidApplication: Application() {
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler got $exception")
+    }
 
     override fun onCreate() {
         super.onCreate()
         initWorkManager()
 
-        GlobalScope.launch {
+        GlobalScope.launch(exceptionHandler) {
             AsteroidRepository(applicationContext).loadTodayAsteroids()
         }
     }

@@ -12,6 +12,7 @@ import com.udacity.asteroidradar.data.mappers.map
 import com.udacity.asteroidradar.data.ws.NasaRetrofit
 import com.udacity.asteroidradar.domain.model.PictureOfDayModel
 import com.udacity.asteroidradar.presentation.utils.Constants.NASA_DATE_FORMATTER
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,6 +41,9 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
 
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler got $exception")
+    }
 
     private var isWeekLoaded = false
 
@@ -76,7 +80,7 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
 
     private fun loadWeekData(dateStart: Date, dateEnd: Date) {
         _progressBarShowing.value = true
-        uiScope.launch {
+        uiScope.launch(exceptionHandler) {
             withContext(Dispatchers.IO) {
                 repository.loadAsteroids(
                     dateStart = NASA_DATE_FORMATTER.format(dateStart),
@@ -88,7 +92,7 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
     }
 
     fun getPictureOfDay() {
-        uiScope.launch {
+        uiScope.launch(exceptionHandler) {
             _pictureOfDay.value = nasaApi.getPictureOfDay().map()
         }
     }
