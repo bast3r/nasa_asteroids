@@ -1,8 +1,11 @@
-package com.udacity.asteroidradar
+package com.udacity.asteroidradar.presentation.utils
 
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.presentation.utils.Constants.NASA_DATE_FORMATTER
+import java.util.Date
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
@@ -20,6 +23,11 @@ fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
     } else {
         imageView.setImageResource(R.drawable.asteroid_safe)
     }
+}
+
+@BindingAdapter("closeApproachDateToString")
+fun bindTextViewCloseApproachDateToString(textView: TextView, date: Date) {
+    textView.text = NASA_DATE_FORMATTER.format(date)
 }
 
 @BindingAdapter("astronomicalUnitText")

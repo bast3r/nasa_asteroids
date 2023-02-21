@@ -11,9 +11,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".presentation.AsteroidApplication"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity" android:exported="true">
+        <meta-data
+            android:name="NASA_API_KEY"
+            android:value="9f1ZvbcTOLuoTxVU1nsReWpQfvohB11aKOZstUxQ" />
+
+        <activity android:name=".presentation.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
