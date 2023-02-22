@@ -28,7 +28,7 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/placeholder_picture_of_day"/>
+                app:srcCompat="@drawable/asteroid_loading"/>
 
             <TextView
                 android:id="@+id/textView"
@@ -40,6 +40,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
+                android:visibility="invisible"
                 android:text="@string/image_of_the_day" />
 
             <TextView
@@ -53,6 +54,17 @@
                 android:gravity="right"
                 android:text="@string/hint_for_image_of_the_day" />
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/asteroid_empty_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/SubHeaderText"
+            android:padding="12dp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/activity_main_image_of_the_day_layout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="@string/asteroid_empty_list_message" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/asteroid_recycler"

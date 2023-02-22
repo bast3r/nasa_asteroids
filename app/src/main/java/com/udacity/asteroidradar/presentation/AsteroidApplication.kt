@@ -12,6 +12,7 @@ import com.udacity.asteroidradar.domain.workers.LoadTodayDataWorker
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
 class AsteroidApplication: Application() {

@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 object NasaRetrofit {
 
@@ -20,7 +21,11 @@ object NasaRetrofit {
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .callTimeout(5, TimeUnit.SECONDS)
+            .build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL) //Базовая часть адреса

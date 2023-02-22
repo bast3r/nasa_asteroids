@@ -7,7 +7,6 @@ import com.udacity.asteroidradar.data.mappers.map
 import com.udacity.asteroidradar.data.ws.NasaRetrofit
 import com.udacity.asteroidradar.domain.model.AsteroidModel
 import com.udacity.asteroidradar.presentation.utils.Constants
-import java.lang.Exception
 import java.util.Date
 
 class AsteroidRepository(val context: Context) {
@@ -29,16 +28,11 @@ class AsteroidRepository(val context: Context) {
     }
 
     suspend fun loadAsteroids(dateStart: String, dateEnd: String) {
-        try {
-            val result = nasaApi.listAsteroids(
-                startDate = dateStart,
-                endDate = dateEnd
-            ).map()
-            saveResultToDatabase(result)
-
-        } catch (e: Exception) {
-            println(e)
-        }
+        val result = nasaApi.listAsteroids(
+            startDate = dateStart,
+            endDate = dateEnd
+        ).map()
+        saveResultToDatabase(result)
     }
 
     suspend fun loadTodayAsteroids() {

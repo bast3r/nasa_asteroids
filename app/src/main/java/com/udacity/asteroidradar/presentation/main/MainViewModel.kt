@@ -2,10 +2,12 @@ package com.udacity.asteroidradar.presentation.main
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.data.AsteroidRepository
 import com.udacity.asteroidradar.data.entities.Asteroid
 import com.udacity.asteroidradar.data.mappers.map
@@ -29,8 +31,16 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
     private var _pictureOfDay = MutableLiveData<PictureOfDayModel>()
     val pictureOfDay: LiveData<PictureOfDayModel> = _pictureOfDay
 
+    private val today = Calendar.getInstance().time
+    private val weekAgo = Calendar.getInstance()
+
+    init {
+        weekAgo.add(Calendar.DAY_OF_YEAR, -7)
+    }
+
     private var _queryFrom = MutableLiveData(TODAY_DATA)
     private var _asteroidList = Transformations.switchMap(_queryFrom) {
+        _progressBarShowing.value = true
         when (it) {
             ALL_DATA -> repository.getAll()
             WEEK_DATA -> getWeekAsteroids()
@@ -43,9 +53,9 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         println("CoroutineExceptionHandler got $exception")
+        Toast.makeText(context, R.string.cant_load_data, Toast.LENGTH_LONG).show()
+        _progressBarShowing.value = false
     }
-
-    private var isWeekLoaded = false
 
     override fun onCleared() {
         super.onCleared()
@@ -65,21 +75,14 @@ class MainViewModel(context: Context) : AndroidViewModel(context as Application)
     }
 
     private fun getWeekAsteroids(): LiveData<List<Asteroid>> {
-        val today = Calendar.getInstance().time
-        val weekAgo = Calendar.getInstance()
-        weekAgo.add(Calendar.DAY_OF_YEAR, -7)
-        if (!isWeekLoaded) {
-            loadWeekData(weekAgo.time, today)
-            isWeekLoaded = true
-        }
+        loadWeekData(weekAgo.time, today)
         return repository.getWeekAsteroids(weekAgo.time, today)
     }
 
-    private var _progressBarShowing = MutableLiveData(false)
+    private var _progressBarShowing = MutableLiveData(true)
     val progressBarShowing: LiveData<Boolean> = _progressBarShowing
 
     private fun loadWeekData(dateStart: Date, dateEnd: Date) {
-        _progressBarShowing.value = true
         uiScope.launch(exceptionHandler) {
             withContext(Dispatchers.IO) {
                 repository.loadAsteroids(

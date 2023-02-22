@@ -48,7 +48,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         b.asteroidRecycler.adapter = adapter
         initListeners()
     }
@@ -68,6 +67,9 @@ class MainFragment : Fragment() {
         viewModel.asteroidList.observe(viewLifecycleOwner) {
             adapter.submitList(it.map { asteroid -> asteroid.map() })
             b.asteroidRecycler.scrollToPosition(0)
+            b.asteroidRecycler.isVisible = it.isNotEmpty()
+            b.asteroidEmptyList?.isVisible = it.isEmpty()
+            b.statusLoadingWheel.isVisible = false
         }
         viewModel.progressBarShowing.observe(viewLifecycleOwner) {
             b.statusLoadingWheel.isVisible = it
@@ -76,10 +78,12 @@ class MainFragment : Fragment() {
             asteroidOfDay = it
             Picasso.with(context)
                 .load(it.url)
+                .placeholder(R.drawable.asteroid_loading)
                 .into(b.activityMainImageOfTheDay, object : Callback {
 
                     override fun onSuccess() {
-                        b.statusLoadingWheel.visibility = View.GONE;
+                        b.statusLoadingWheel.visibility = View.GONE
+                        b.textView.visibility = View.VISIBLE
                     }
 
                     override fun onError() {
